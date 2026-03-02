@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEAMTOP - Пополнить Steam</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}" href="/css/output.css">
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+
+
+<nav class="bg-cyan-600 py-4">
+    <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <div class="text-2xl font-bold tracking-wider">STEAMTOP</div>
+
+        <div class="flex items-center gap-8 text-sm font-medium">
+            <a href="#" class="hover:text-cyan-200 transition">ГЛАВНАЯ</a>
+            <a href="#" class="hover:text-cyan-200 transition">УСЛУГИ</a>
+            <a href="#" class="hover:text-cyan-200 transition">ПРОФИЛЬ</a>
+        </div>
+    </div>
+</nav>
+
+
+<div class="max-w-6xl mx-auto mt-12 px-6">
+    <div class="bg-gray-900 rounded-3xl p-8 shadow-2xl border border-gray-800">
+        <div class="flex flex-col md:flex-row items-center gap-8">
+
+            <div class="flex-shrink-0">
+                <img src="img/steam-logo.png" alt="Steam" class="w-24 h-24">
+            </div>
+
+            <div class="flex-1">
+                <h1 class="text-4xl font-bold mb-2">Пополнить Steam</h1>
+                <p class="text-gray-400 mb-8">Быстро и безопасно</p>
+
+                <form th:action="@{/api/orders}" method="post" class="space-y-6">
+
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-2">Логин Steam</label>
+                        <div class="relative">
+                            <input type="text" name="info"
+                                   class="w-full bg-gray-800 border border-gray-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-500"
+                                   placeholder="Введите логин Steam">
+                            <button type="button"
+                                    class="absolute right-4 top-1/2 -translate-y-1/2 bg-gray-700 text-xs px-3 py-1 rounded-full">
+                                ?
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="md:col-span-2">
+                            <label class="block text-sm text-gray-400 mb-2">Сумма</label>
+                            <input type="number" name="amount"
+                                   class="number-input w-full bg-gray-800 border border-gray-700 rounded-2xl px-5 py-4 focus:outline-none focus:border-cyan-500"
+                                   placeholder="0">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Валюта</label>
+                            <div class="flex gap-2">
+                                <label class="flex-1">
+                                    <input type="radio" name="currency" value="RUB" checked class="peer hidden">
+                                    <div class="peer-checked:bg-cyan-600 peer-checked:text-white bg-gray-800 border border-gray-700 rounded-2xl py-4 text-center cursor-pointer">
+                                        ₽
+                                    </div>
+                                </label>
+                                <label class="flex-1">
+                                    <input type="radio" name="currency" value="KZT" checked class="peer hidden">
+                                    <div class="peer-checked:bg-cyan-600 peer-checked:text-white bg-gray-800 border border-gray-700 rounded-2xl py-4 text-center cursor-pointer">
+                                        ₸
+                                    </div>
+                                </label>
+                                <label class="flex-1">
+                                    <input type="radio" name="currency" value="UAH" class="peer hidden">
+                                    <div class="peer-checked:bg-cyan-600 peer-checked:text-white bg-gray-800 border border-gray-700 rounded-2xl py-4 text-center cursor-pointer">
+                                        ₴
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <button type="submit"
+                            class="w-full bg-cyan-600 hover:bg-cyan-500 transition py-5 rounded-2xl font-bold text-lg">
+                        ОПЛАТИТЬ + сумма в рублях с комиссией
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="max-w-6xl mx-auto mt-16 px-6">
+    <h2 class="text-2xl font-bold mb-8">Популярные игры</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="bg-gray-900 rounded-3xl overflow-hidden group">
+            <img src="img/game1.jpg" class="w-full h-56 object-cover group-hover:scale-105 transition">
+            <div class="p-4">
+                <h3 class="font-semibold">Название игры</h3>
+                <p class="text-cyan-400">1 250 ₽</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
