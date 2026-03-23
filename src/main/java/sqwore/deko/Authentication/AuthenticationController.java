@@ -12,6 +12,8 @@ import sqwore.deko.DTO.AuthenticationRequest;
 import sqwore.deko.DTO.AuthenticationResponse;
 import sqwore.deko.DTO.UserRequests;
 
+import java.io.IOException;
+
 @RestController
 @RequestMapping("/profile")
 public class AuthenticationController {
@@ -32,7 +34,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/refresh-token")
-    public void refreshToken(HttpServletRequest request, HttpServletResponse response){
+    public void refreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         authenticationService.refreshToken(request,response);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request) {
+        authenticationService.logout(request);
+        return ResponseEntity.ok().body("Logout successful");
     }
 }

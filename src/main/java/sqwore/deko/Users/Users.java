@@ -6,6 +6,7 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sqwore.deko.Orders.Orders;
+import sqwore.deko.Tokens.Token;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,11 @@ public class Users implements UserDetails {
     @JsonManagedReference
     private List<Orders> orders = new ArrayList<>();
 
+
+    @OneToMany(mappedBy = "user")
+    @JsonManagedReference
+    private List<Token> tokens = new ArrayList<>();
+
     public Users() {}
 
     public Users(String username){
@@ -78,6 +84,11 @@ public class Users implements UserDetails {
         return  username;
     }
 
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 
     public  void setUsername(String username){
         this.username = username;

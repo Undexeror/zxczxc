@@ -9,4 +9,9 @@ public class HomePageController {
     public String HomePage() {
         return "index";
     }
+
+    @GetMapping("/register")
+    public String registerPage(){
+        return "register";
+    }
 }
