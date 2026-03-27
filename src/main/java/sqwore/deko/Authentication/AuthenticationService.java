@@ -58,9 +58,9 @@ public class AuthenticationService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(),request.getPassword())
         );
         Users user =usersRepository.findByUsername(request.getUsername()).orElseThrow();
+        revokeAllUserTokens(user);
         String jwtToken = jwtService.generationToken(user);
         String refreshToken = jwtService.generationRefreshToken(user);
-        revokeAllUserTokens(user);
         saveUserToken(user,jwtToken,TokenType.ACCESS);
         saveUserToken(user,refreshToken,TokenType.REFRESH);
         return new AuthenticationResponse(jwtToken, refreshToken);

@@ -34,12 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
 
-        if (request.getServletPath().contains("/")){
-            filterChain.doFilter(request,response);
-            return;
-        }
 
-        final String authHeader = request.getHeader("Autorization");
+        final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String username;
 
@@ -49,15 +45,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         jwt = authHeader.substring(7);
-        var isTokenValidInDb = tokenRepository.findByToken(jwt)
-                .map(t -> !t.isExpired() && !t.isRevoked())
-                .orElse(false);
         username = jwtService.extractUsername(jwt);
 
         if (username!= null && SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = this.usersDetailsService.loadUserByUsername(username);
+
+            boolean isTokenValidInDb = tokenRepository.findByToken(jwt)
+                    .map(t -> !t.isExpired() && !t.isRevoked())
+                    .orElse(false);
+
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValidInDb) {
-                if (jwtService.isTokenValid(jwt, userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
@@ -69,7 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
+
             }
         }
 
