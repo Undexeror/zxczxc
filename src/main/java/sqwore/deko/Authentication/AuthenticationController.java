@@ -3,10 +3,17 @@ package sqwore.deko.Authentication;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -54,89 +61,59 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
     private final UsersRepository usersRepository;
+    private final AuthenticationManager authenticationManager;
 
-    public AuthenticationController(AuthenticationService authenticationService, UsersRepository usersRepository) {
+    public AuthenticationController(AuthenticationService authenticationService,AuthenticationManager authenticationManager, UsersRepository usersRepository) {
         this.authenticationService = authenticationService;
         this.usersRepository = usersRepository;
+        this.authenticationManager = authenticationManager;
     }
 
-    // Показ формы входа
+
     @GetMapping("/login")
     public String showLoginPage() {
-        return "login";                 // templates/login.html
+        return "login";
     }
 
-    // Обработка входа (POST)
-    @PostMapping("/login")
-    public String processLogin(@ModelAttribute AuthenticationRequest request,
-                               HttpServletResponse response,
-                               HttpServletRequest httpRequest,
-                               RedirectAttributes redirectAttributes) {
-        try {
-            var authResp = authenticationService.authenticate(request);
 
-            Users user = usersRepository.findByUsername(request.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
-            System.out.println("Вход успешен");
-
-            // передаём id через redirect attributes (flash)
-            redirectAttributes.addAttribute("id", user.getId());   // ← вот так
-
-            return "redirect:/profile/{id}";   // Spring сам подставит значение
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Неверный логин или пароль");
-            return "redirect:/login";
-        }
-    }
-
-    // Показ формы регистрации
     @GetMapping("/register")
     public String showRegisterPage() {
-        return "register";              // templates/register.html (уже есть в проекте)
+        return "register";
     }
 
-    // Обработка регистрации (POST)
     @PostMapping("/register")
-    public String processRegister(@ModelAttribute UserRequests request,
-                                  HttpServletResponse response,
-                                  RedirectAttributes redirectAttributes) {
+    public String processRegister(Users user,
+                                  RedirectAttributes redirectAttributes,
+                                  Model model) {
         try {
-            var authResp = authenticationService.register(request);
-            Users user = usersRepository.findByUsername(request.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-            // redirectAttributes.addFlashAttribute("accessToken", authResp.getAccessToken());
-
+            authenticationService.register(user);
+            redirectAttributes.addAttribute("id",user.getId());
             return "redirect:/profile/{id}";
+
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage() != null ? e.getMessage() : "Ошибка регистрации");
             return "redirect:/register";
         }
     }
 
-    // Профиль (пример — адаптируй под свой Security)
+
     @GetMapping("/profile/{id}")
-    public String showProfile(@PathVariable Long id, Model model, Authentication authentication) {
-
-//        if (authentication == null || !authentication.isAuthenticated()) {
-//            return "redirect:/login?expired=true";
-//        }
-
+    public String showProfile(Authentication authentication,Model model) {
         Object principal = authentication.getPrincipal();
+        System.out.println(principal);
+        String username = null;
 
-        if (!(principal instanceof Users)) {
-            return "redirect:/access-denied";
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+            System.out.println("Regular user: " + username);
         }
 
-        Users current = (Users) principal;
-        if (!current.getId().equals(id)) {
-            return "redirect:/access-denied";   // или 403
-        }
+        Users user = usersRepository.findByUsername(username);
 
-        model.addAttribute("username", current.getUsername());
-        model.addAttribute("userId", id);
-        model.addAttribute("count",current.getCount());
 
-        return "profile";
+        model.addAttribute("username",user.getUsername());
+        model.addAttribute("count",user.getCount());
+
+        return "profile/{id}";
     }
 }

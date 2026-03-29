@@ -6,7 +6,6 @@ import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import sqwore.deko.Orders.Orders;
-import sqwore.deko.Tokens.Token;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,10 +49,8 @@ public class Users implements UserDetails {
     @JsonManagedReference
     private List<Orders> orders = new ArrayList<>();
 
+    private boolean active = true;
 
-    @OneToMany(mappedBy = "user")
-    @JsonManagedReference
-    private List<Token> tokens = new ArrayList<>();
 
     public Users() {}
 
@@ -84,9 +81,29 @@ public class Users implements UserDetails {
         return  username;
     }
 
+    public boolean getActive(){return active;};
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
 
     @Override
     public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
         return true;
     }
 
