@@ -1,0 +1,52 @@
+<!-- OVERLAY / МОДАЛЬНОЕ ОКНО -->
+<div id="orderModal" 
+     class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+
+    <div class="bg-gray-900 rounded-3xl p-8 max-w-md w-full mx-4 text-center border border-gray-700 shadow-2xl">
+        
+        <!-- Иконка успеха -->
+        <div id="successIcon" class="hidden mx-auto mb-4 w-16 h-16 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center text-4xl">
+            ✅
+        </div>
+        
+        <!-- Иконка ошибки -->
+        <div id="errorIcon" class="hidden mx-auto mb-4 w-16 h-16 bg-red-500/10 text-red-500 rounded-2xl flex items-center justify-center text-4xl">
+            ❌
+        </div>
+
+        <h2 id="modalTitle" class="text-2xl font-bold mb-2"></h2>
+        <p id="modalMessage" class="text-gray-400 mb-8"></p>
+
+        <button onclick="closeModal()" 
+                class="w-full bg-cyan-600 hover:bg-cyan-500 py-4 rounded-2xl font-bold text-lg transition">
+            Хорошо
+        </button>
+    </div>
+</div>
+
+<script>
+    // Показываем модалку после загрузки страницы
+    window.onload = function() {
+        const successMsg = /*[[${success}]]*/ '';
+        const errorMsg = /*[[${error}]]*/ '';
+
+        const modal = document.getElementById('orderModal');
+
+        if (successMsg) {
+            document.getElementById('successIcon').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Успешно!';
+            document.getElementById('modalMessage').innerHTML = successMsg;
+            modal.classList.remove('hidden');
+        } 
+        else if (errorMsg) {
+            document.getElementById('errorIcon').classList.remove('hidden');
+            document.getElementById('modalTitle').textContent = 'Ошибка';
+            document.getElementById('modalMessage').innerHTML = errorMsg;
+            modal.classList.remove('hidden');
+        }
+    };
+
+    function closeModal() {
+        document.getElementById('orderModal').classList.add('hidden');
+    }
+</script>
