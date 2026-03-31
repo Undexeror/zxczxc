@@ -92,3 +92,38 @@
     // При загрузке страницы
     window.addEventListener('load', updateButton);
 </script>
+public void sendOrderNotification(CreateOrderRequest request) {
+        String message = """
+                🛒 Новый заказ!
+                
+                👤 Логин Steam: %s
+                💰 Сумма: %s %s
+                🇷🇺 К оплате в рублях: %s ₽
+                
+                ⏰ Время: %s
+                """.formatted(
+                request.getInfo(),
+                request.getAmount(),
+                request.getCurrency(),
+                request.getRubAmount() != null ? request.getRubAmount() : "—",
+                java.time.LocalDateTime.now()
+        );
+
+        String url = "https://api.telegram.org/bot" + botToken + "/sendMessage";
+
+        String body = """
+                {
+                    "chat_id": "%s",
+                    "text": "%s",
+                    "parse_mode": "HTML"
+                }
+                """.formatted(chatId, message.replace("\n", "\\n"));
+
+        try {
+            restTemplate.postForObject(url, body, String.class);
+            System.out.println("✅ Уведомление в Telegram отправлено");
+        } catch (Exception e) {
+            System.err.println("❌ Ошибка отправки в Telegram: " + e.getMessage());
+        }
+    }
+}
