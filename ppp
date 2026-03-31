@@ -126,5 +126,4 @@ public void sendOrderNotification(CreateOrderRequest request) {
             System.err.println("❌ Ошибка отправки в Telegram: " + e.getMessage());
         }
     }
-}
-8756718667:AAGvSjP88Mg6sJZQOe_TqTLzd3gUuThWiLE
+
