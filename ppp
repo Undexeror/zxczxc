@@ -69,3 +69,26 @@
         </div>
     </div>
 </div>
+<script>
+    const amountInput = document.querySelector('input[th\\:field="*{amount}"]');
+    const currencyRadios = document.querySelectorAll('input[name="currency"]');
+    const dynamicAmount = document.getElementById('dynamicAmount');
+
+    function updateButton() {
+        let amount = parseFloat(amountInput.value) || 0;
+        let currency = document.querySelector('input[name="currency"]:checked').value;
+
+        let rubAmount = amount;
+
+        if (currency === "KZT") rubAmount = Math.round(amount * 0.18);
+        if (currency === "UAH") rubAmount = Math.round(amount * 2.3);
+
+        dynamicAmount.textContent = rubAmount + " ₽";
+    }
+
+    amountInput.addEventListener('input', updateButton);
+    currencyRadios.forEach(radio => radio.addEventListener('change', updateButton));
+
+    // При загрузке страницы
+    window.addEventListener('load', updateButton);
+</script>
