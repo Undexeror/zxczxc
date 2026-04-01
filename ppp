@@ -208,3 +208,45 @@ public class TelegramNotificationService {
         }
     }
 }
+<script th:inline="javascript">
+    window.onload = function() {
+        const successMsg = /*[[${success}]]*/ '';
+        const errorMsg   = /*[[${error}]]*/ '';
+
+        if (successMsg) {
+            showModal(true, successMsg);
+        } else if (errorMsg) {
+            showModal(false, errorMsg);
+        }
+    };
+
+    function showModal(isSuccess, message) {
+        const modal = document.getElementById('orderModal');
+        const successImg = document.getElementById('successImage');
+        const errorImg = document.getElementById('errorImage');
+        const title = document.getElementById('modalTitle');
+        const msg = document.getElementById('modalMessage');
+
+        if (isSuccess) {
+            successImg.classList.remove('hidden');
+            errorImg.classList.add('hidden');
+            title.textContent = 'Успешно!';
+            title.style.color = '#34d399';
+        } else {
+            successImg.classList.add('hidden');
+            errorImg.classList.remove('hidden');
+            title.textContent = 'Ошибка';
+            title.style.color = '#f87171';
+        }
+
+        msg.textContent = message;
+        modal.classList.remove('hidden');
+
+        // Автозакрытие через 4.5 секунды
+        setTimeout(closeModal, 4500);
+    }
+
+    function closeModal() {
+        document.getElementById('orderModal').classList.add('hidden');
+    }
+</script>
