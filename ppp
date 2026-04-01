@@ -250,3 +250,4 @@ public class TelegramNotificationService {
         document.getElementById('orderModal').classList.add('hidden');
     }
 </script>
+ngrok config add-authtoken 3Blfk1FOSfmRDoTq7pdjNaEQeyT_4dSkF3QmHU1cqXHJM4Ep7
